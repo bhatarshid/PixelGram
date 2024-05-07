@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { createUserAccount } from "../../lib/appwrite/api"
+import { showToast } from "../../components/show-toast"
 
 const SignupForm = () => {
     const [formData, setFormData] = useState({
@@ -11,8 +13,19 @@ const SignupForm = () => {
 
     const { name, username, email, password } = formData
 
-    const onSubmit = () => {
+    const onSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            e.preventDefault();
 
+            const newUser = await createUserAccount(formData);
+
+            if(!newUser) {
+                return showToast('Sign up failed. Please try again.', 'error');
+            }
+        }
+        catch (error) {
+            return showToast('Sign up failed. Please try again.', 'error');
+        }
     }
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
